@@ -48,6 +48,10 @@ function js_prerender_highlight(hs::String)::String
     # and therefore the regex can be fairly strict with spaces etc
     matches = collect(eachmatch(r"<pre><code\s*(class=\"?(?:language-)?(.*?)\"?)?\s*>|<\/code><\/pre>", hs))
     isempty(matches) && return hs
+    
+    for match in matches
+        println(match, "\n")
+    end
 
     # buffer to write the JS script
     jsbuffer = IOBuffer()
