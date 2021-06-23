@@ -67,9 +67,6 @@ function js_prerender_highlight(hs::String)::String
         lang = co.captures[2]
         # un-escape code string
         cs = html_unescape(cs) |> escape_string
-        @show cs
-        @show lang
-        println()
         # add to content of jsbuffer
         write(jsbuffer, """console.log("<pre><code class=\\"$lang hljs\\">" + hljs.highlight("$cs", {'language': "$lang"}).value + "</code></pre>");""")
         # in between every block, write $splitter so that output can be split easily
@@ -88,7 +85,9 @@ function js2html(hs::String, jsbuffer::IOBuffer, matches::Vector{RegexMatch},
                  splitter::String)::String
     # run it redirecting the output to a buffer
     outbuffer = IOBuffer()
-    run(pipeline(`$NODE -e "$(String(take!(jsbuffer)))"`, stdout=outbuffer))
+    s = String(take!(jsbuffer))
+    @show s
+    run(pipeline(`$NODE -e "$s"`, stdout=outbuffer))
 
     # read the buffer and split it using $splitter
     out = String(take!(outbuffer))
